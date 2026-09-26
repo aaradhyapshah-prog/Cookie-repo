@@ -5,9 +5,7 @@ const products = [
     tagline: "Earthy, hearty bites for everyday wellness.",
     tags: ["High Fibre", "Digestive Delight"],
     price: 450,
-    image:
-      "https://images.unsplash.com/photo-1499636136210-6f4ee535556b?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/buckwheat-cookies.jpg",
+    placeholder: "Buckwheat cookies placeholder",
   },
   {
     id: "coconut",
@@ -15,9 +13,7 @@ const products = [
     tagline: "Toasty coconut with a naturally sweet finish.",
     tags: ["High Fibre", "Energy Booster"],
     price: 480,
-    image:
-      "https://images.unsplash.com/photo-1614707267537-b85aaf00c2c0?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/coconut-macaroons.jpg",
+    placeholder: "Coconut macaroons placeholder",
   },
   {
     id: "jwano",
@@ -25,9 +21,7 @@ const products = [
     tagline: "Traditional jwano warmth in a wholesome jar.",
     tags: ["High Fibre", "Digestive Delight"],
     price: 470,
-    image:
-      "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/jwano-seeds-cookies.jpg",
+    placeholder: "Jwano seeds cookies placeholder",
   },
   {
     id: "oats",
@@ -35,9 +29,7 @@ const products = [
     tagline: "Comforting oats for a wholesome everyday bite.",
     tags: ["Oaty Goodness", "Wholesome Bite"],
     price: 420,
-    image:
-      "https://images.unsplash.com/photo-1511381939415-d913e1aa2cc0?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/oats-cookies.jpg",
+    placeholder: "Oats cookies placeholder",
   },
   {
     id: "millet",
@@ -45,9 +37,7 @@ const products = [
     tagline: "Ancient grains, baked into a gentle crunch.",
     tags: ["High Fibre", "Digestive Delight"],
     price: 440,
-    image:
-      "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/millet-cookies.jpg",
+    placeholder: "Millet cookies placeholder",
   },
   {
     id: "choco-walnut",
@@ -55,9 +45,7 @@ const products = [
     tagline: "Rich cocoa folded with nutty walnut crunch.",
     tags: ["Chocolate Richness", "Nutty Goodness"],
     price: 520,
-    image:
-      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/chocolate-walnut-cookies.jpg",
+    placeholder: "Chocolate walnut cookies placeholder",
   },
   {
     id: "peanut",
@@ -65,9 +53,7 @@ const products = [
     tagline: "Peanut power for a satisfying energy lift.",
     tags: ["Peanut Power", "Energy Booster"],
     price: 490,
-    image:
-      "https://images.unsplash.com/photo-1464349095431-e9fe36c25b63?auto=format&fit=crop&w=900&q=80",
-    fileHint: "images/peanut-butter-cookies.jpg",
+    placeholder: "Peanut butter cookies placeholder",
   },
 ];
 
@@ -86,13 +72,64 @@ const header = document.querySelector(".site-header");
 
 const money = (value) => `Rs. ${value.toLocaleString("en-NP")}`;
 
+function addPlaceholderStyles() {
+  const style = document.createElement("style");
+  style.textContent = `
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      text-align: center;
+      color: #6b536e;
+      background: repeating-linear-gradient(135deg, #f3e6d4 0 12px, #ead8c1 12px 24px);
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .image-placeholder::before { content: "Placeholder"; display: block; }
+    .brand .image-placeholder, .footer-brand .image-placeholder {
+      width: 56px;
+      height: 56px;
+      min-height: 56px;
+      padding: .25rem;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      font-size: 0;
+      background: var(--purple-soft, #f3e8f4);
+    }
+    .brand .image-placeholder::before, .footer-brand .image-placeholder::before {
+      content: "✦";
+      font-size: 1.5rem;
+      color: var(--purple, #4a154b);
+    }
+    .cart-line .image-placeholder { width: 64px; height: 64px; min-height: 64px; border-radius: 12px; padding: .25rem; font-size: 0; }
+    .cart-line .image-placeholder::before { content: "✦"; font-size: 1.25rem; }
+  `;
+  document.head.appendChild(style);
+}
+
+function replaceStaticImages() {
+  document.querySelectorAll("img").forEach((image) => {
+    const placeholder = document.createElement("div");
+    placeholder.className = "image-placeholder";
+    placeholder.setAttribute("role", "img");
+    placeholder.setAttribute("aria-label", `${image.alt || "Image"} placeholder`);
+    image.replaceWith(placeholder);
+  });
+}
+
+addPlaceholderStyles();
+replaceStaticImages();
+
 function renderProducts() {
   productGrid.innerHTML = products
     .map(
       (product) => `
       <article class="product-card" data-product="${product.id}">
         <div class="product-media">
-          <img src="${product.image}" alt="${product.name}" data-local="${product.fileHint}">
+          <div class="image-placeholder" role="img" aria-label="${product.placeholder}"></div>
           <span class="badge">${product.tags[0]}</span>
           <span class="price-chip">${money(product.price)}</span>
         </div>
@@ -132,7 +169,7 @@ function renderCart() {
     .map(
       (item) => `
       <div class="cart-line">
-        <img src="${item.image}" alt="${item.name}">
+        <div class="image-placeholder" role="img" aria-label="${item.placeholder}"></div>
         <div>
           <strong>${item.name}</strong>
           <div class="qty-row">
@@ -180,16 +217,6 @@ function showToast(message) {
   window.clearTimeout(showToast.timer);
   showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 1800);
 }
-
-function useLogoFallback(img) {
-  img.addEventListener("error", () => {
-    if (img.dataset.fallbackApplied) return;
-    img.dataset.fallbackApplied = "true";
-    img.src = "images/logo.svg";
-  });
-}
-
-document.querySelectorAll("img.logo-img").forEach(useLogoFallback);
 
 document.addEventListener("click", (event) => {
   const add = event.target.closest("[data-add]");
